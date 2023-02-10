@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.qingqiao.mapper.renren">
+<resultMap id="abc" type="ren">
+<id property="nid" column="nid"/>
+    <result property="name" column="name"/>
+    <result property="age" column="age"/>
+    <collection property="mc" column="nid" ofType="zhongjianshang">
+        <id property="id" column="id"/>
+        <association property="wuqi" javaType="wuqi">
+            <id property="wid" column="wid"/>
+            <result property="name" column="tname"/>
+        </association>
+    </collection>
+</resultMap>
+    <select id="queryren" resultMap="abc">
+        select a.*,b.id,c.wid,c.name tname from ren a join zhongjian b on a.nid = b.nid join wuqi c on b.wid = c.wid
+    </select>
+    <select id="querywuqi" resultType="wuqi">
+        select * from wuqi
+    </select>
+    <insert id="addren" parameterType="ren" useGeneratedKeys="true" keyProperty="nid">
+        insert into ren(name,age) values(#{name},#{age})
+    </insert>
+
+    <insert id="addwuqi">
+        insert into zhongjian values(null,#{nid},#{wid})
+    </insert>
+    <select id="queryByid" resultMap="abc">
+        select a.*,b.id,c.wid,c.name tname from ren a join zhongjian b on a.nid = b.nid join wuqi c on b.wid = c.wid where  a.nid=#{id}
+    </select>
+    <update id="update" parameterType="ren">
+        update ren set name=#{name},age=#{age} where nid=#{nid}
+    </update>
+    <delete id="deleteren">
+        delete from zhongjian where nid=#{nid}
+    </delete>
+    <delete id="delete">
+        delete from ren where nid=#{nid}
+    </delete>
+</mapper>
